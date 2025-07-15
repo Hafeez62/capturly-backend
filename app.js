@@ -12,7 +12,14 @@ app.post('/process', upload.fields([{ name: 'video' }, { name: 'captions' }]), (
     const captionsPath = req.files['captions'][0].path;
     const outputPath = `output/${Date.now()}_output.mp4`;
 
-    const ffmpegCmd = `ffmpeg -i ${videoPath} -vf subtitles=${captionsPath} ${outputPath}`;
+    const path = require('path');
+
+const videoAbsolutePath = path.resolve(videoPath);
+const captionsAbsolutePath = path.resolve(captionsPath);
+const outputAbsolutePath = path.resolve(outputPath);
+
+const ffmpegCmd = `ffmpeg -i "${videoAbsolutePath}" -vf subtitles="${captionsAbsolutePath}" "${outputAbsolutePath}"`;
+
 
     exec(ffmpegCmd, (error) => {
         if (error) {
